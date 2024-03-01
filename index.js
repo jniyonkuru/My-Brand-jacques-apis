@@ -11,10 +11,12 @@ app.use(express.json());
 app.get('/',(req,res)=>{
     res.status(200).send("welcome to my api");
 })
+app.use('/api/users',users);
+
 app.get('*',(req,res)=>{
     res.status(404).send("page not found");
 })
-app.use('/api/users',users);
+
 const port=process.env.PORT||4001;
 app.listen(port,()=>{
     console.log(`listening to port:${port}`);
