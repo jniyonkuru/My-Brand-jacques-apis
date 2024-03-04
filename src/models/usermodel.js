@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const userSchema=new mongoose.Schema({
@@ -19,10 +20,16 @@ const userSchema=new mongoose.Schema({
         minlength:5,
         maxlength:1024
     },
-    role:{
+    confirmPassword:{
         type:String,
-        default:'user'
+        required:true,
+        minlength:5,
+        maxlength:1024
     },
+    isAdmin:{
+        type:Boolean,
+        required:true}
+        ,
     createdAt:{
         type:Date,
         default:Date.now()
