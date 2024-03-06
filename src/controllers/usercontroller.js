@@ -10,11 +10,14 @@ export default  class UserController{
        const{error}=Validation.validateUser(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     let user=await User.findOne({email:req.body.email});
-    if(user)return res.status(400).send('User already registered');
+    if(user)return res.status(400).json({
+        status:"fail",
+        message:"user Already registered"
+    });
     user=new User(_.pick(req.body,['name','email','password','isAdmin','confirmPassword']));
     const salt= await bcrypt.genSalt(10);
     user.password= await bcrypt.hash(user.password,salt)
-  
+    user.confirmPassword= await bcrypt.hash(user.confirmPassword,salt);
    await user.save();
    res.status(200).json({
     status:'success',
@@ -48,6 +51,7 @@ export default  class UserController{
         try {
             const user= await User.findById(req.params.id).select('-password');
             if(!user)return res.status(400).json({
+                status:"fail",
                 message:"user with the given id was not found"
             })
            return  res.status(200).json({
@@ -65,6 +69,7 @@ export default  class UserController{
         try {
             const user=await User.findByIdAndDelete(req.params.id)
             if(!user)return res.status(500).json({
+                status:'fail',
                 message:"user was not found"
             })
              return res.status(204).send();
