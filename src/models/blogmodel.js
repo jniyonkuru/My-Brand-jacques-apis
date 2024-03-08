@@ -35,7 +35,7 @@ const blogSchema=new mongoose.Schema({
     default:0
  },
  likedBy:[String],
- dislikedBy:[String]
+
 })
 const Blog=mongoose.model('Blog',blogSchema);
 
