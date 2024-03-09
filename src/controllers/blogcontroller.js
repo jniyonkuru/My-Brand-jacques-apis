@@ -14,9 +14,14 @@ export default class BlogController{
             message:error.details[0].message
         })
       try {
-        const blog= new Blog(_.pick(req.body,['blogTitle','image','blogBody']));
-        const decoded = jwt.verify(req.header('x-auth-token',process.env.JWT_SECRET));
+        const blog= new Blog(_.pick(req.body,['blogTitle','blogBody']));
+
+        const decoded = jwt.verify(req.header('x-auth-token'),process.env.JWT_SECRET);
         blog.author=decoded.userId;
+        blog.image={
+            data:req.file.filename,
+            contentType:'image/jpg'
+        }
          
       await blog.save()
       return res.status(204).send()
