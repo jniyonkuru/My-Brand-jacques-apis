@@ -127,9 +127,10 @@ export default  class UserController{
                 userName:foundUser.name,
                 isAdmin:foundUser.isAdmin
             })
-            return res.header('x-auth-token',token).status(200).json({
+            return res.status(200).json({
                 status:"success",
-                message:"loggedIn successfully"
+                message:"loggedIn successfully",
+                token
             })
             
         } catch (error) {

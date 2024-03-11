@@ -12,7 +12,8 @@ export default class CommentsController{
             status:"error",
             message:error.details[0].message
         })
-        const token=req.header('x-auth-token');
+        const {authorization}=req.headers;
+        const token=authorization.split(' ')[1]
          if(!token) return res.status(401).json({
             status:'fail',
             message:" you  don't have the permission to perform  this action"

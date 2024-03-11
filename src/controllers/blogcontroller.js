@@ -15,8 +15,9 @@ export default class BlogController{
         })
       try {
         const blog= new Blog(_.pick(req.body,['blogTitle','blogBody']));
-
-        const decoded = jwt.verify(req.header('x-auth-token'),process.env.JWT_SECRET);
+        const {authorization}=req.headers;
+        const token= authorization.split(' ')[1]
+        const decoded = jwt.verify(token,process.env.JWT_SECRET);
         blog.author=decoded.userId;
         blog.image={
             data:req.file.filename,
@@ -24,7 +25,10 @@ export default class BlogController{
         }
          
       await blog.save()
-      return res.status(204).send()
+      return res.status(200).json({
+        status:'success',
+        data:blog
+      })
       } catch (error) {
         return res.status(500).json({
             status:"error",
@@ -95,7 +99,9 @@ static async deleteBlog(req,res){
 }
 static async likeBlog(req,res){
 try {
-    const decoded=jwt.verify(req.header('x-auth-token'),process.env.JWT_SECRET);
+    const {authorization}=req.headers;
+    const token= authorization.split(' ')[1];
+    const decoded=jwt.verify(token,process.env.JWT_SECRET);
     const userId=decoded.userId;
     const likedBlog= await Blog.findOne({_id:req.params.id,likedBy:{$in:userId}});
 

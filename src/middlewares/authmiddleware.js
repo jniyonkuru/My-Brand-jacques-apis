@@ -4,14 +4,22 @@ dotenv.config();
 
 export default class AuthMiddleware {
   static  isAuthenticated(req, res, next) {
-    const token = req.header("x-auth-token");
-    if (!token)
+    try{
+    const {authorization}=req.headers;
+    if (!authorization){
       return res.status(401).json({
         status: "fail",
         message: "no token provided",
       });
-    try {
-      const user = jwt.verify(req.header("x-auth-token") ,process.env.JWT_SECRET);
+    };
+    const token=authorization.split(' ')[1];
+    if(!token){
+      return res.status(401).json({
+        status:'fail',
+        message:"Unauthorised action"
+      })
+    }
+      const user = jwt.verify(token ,process.env.JWT_SECRET);
       req.user = user;
       next();
     } catch (ex){
