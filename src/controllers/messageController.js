@@ -77,6 +77,27 @@ import _ from "lodash";
   }     
      
     }
+    static async deleteAllMessages(req,res){
+   try {
+    const messages= await Message.find()
+    if(messages.length<1)return res.status(401).json({
+      status:"fail",
+      message:" there is no messages"
+    })
+    const message=await Message.deleteMany({});
+      return res.status(200).json({
+        status:'success',
+        message:'deleted all messages'
+      })
+   } catch (error) {
+    return res.status(500).json({
+      status:"error",
+      message:error.message
+    })
+    
+   }
+
+    }
 
 
  }

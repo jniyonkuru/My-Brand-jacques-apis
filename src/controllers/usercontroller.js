@@ -130,7 +130,8 @@ export default  class UserController{
             return res.status(200).json({
                 status:"success",
                 message:"loggedIn successfully",
-                token
+                token,
+                
             })
             
         } catch (error) {

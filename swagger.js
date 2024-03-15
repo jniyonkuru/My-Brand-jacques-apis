@@ -18,11 +18,10 @@ export const swaggerJson = {
     "components": {
       "securitySchemes": {
         "token": {
-          "type": "apiKey",
+          "type": "http",
           "scheme": "bearer",
           "bearerFormat": "JWT",
           "name": "Authorization",
-          "in": "header"
         }
       }
     },
@@ -57,6 +56,10 @@ export const swaggerJson = {
                     "confirmPassword":{
                       "type":"string",
                       "required":true
+                    },
+                    "isAdmin":{
+                      "type":"boolean",
+                
                     }
                   }
                 }
@@ -161,11 +164,11 @@ export const swaggerJson = {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "BlogTitle": {
+                    "blogTitle": {
                       "type": "string",
                       "required": true
                     },
-                    "BlogBody": {
+                    "blogBody": {
                       "type": "string",
                       "required": true
                     },
@@ -258,12 +261,19 @@ export const swaggerJson = {
             }
           }
         },
+
         "get": {
           "tags": ["blogs"],
           "summary": "List all blogs",
+          "security": [
+            {
+              "token": []
+            }
+          ],
           "responses": {
             "200": {
               "description": "OK",
+      
               "content": {
                 "application/json": {
                   "schema": {
@@ -522,6 +532,11 @@ export const swaggerJson = {
               "required":"true"
             },
           }],
+          "security": [
+            {
+              "token": []
+            }
+          ],
           "responses": {
             "200": {
               "description": "OK",
@@ -603,6 +618,11 @@ export const swaggerJson = {
         "delete": {
           "tags": ["blogs"],
           "summary": "Delete a blog",
+          "security": [
+            {
+              "token": []
+            }
+          ],
           "responses": {
             "204": {
               "description": "OK",
@@ -669,7 +689,7 @@ export const swaggerJson = {
 
      }
       ,
-      "/api/comments/{blogId}": {
+      "/api/blog/{blogId}/comments": {
         "post": {
           "tags": ["Comments"],
           "summary": "Create a comment",
@@ -695,11 +715,8 @@ export const swaggerJson = {
                     "commentBody": {
                       "type": "string",
                       "required": true
-                    },
-                    "description": {
-                      "type": "string",
-                      "required": true
                     }
+              
                   }
                 }
               }
@@ -712,9 +729,63 @@ export const swaggerJson = {
             }
           }
         },
+        "delete": {
+          "tags": ["Comments"],
+          "summary": "Dele all comments of a blog",
+          "security": [
+            {
+              "token": []
+            }
+          ],
+          "parameters":[{
+            "in":"path",
+            "name":"blogId",
+            "schema":{
+              "type":"string",
+              "required":"true"
+            },
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "array"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "error": {
+                        "type": "error"
+                      }
+                    }
+                  },
+                  
+                }
+              }
+            }
+          }
+        },
         "get": {
           "tags": ["Comments"],
-          "summary": "List blog all comments",
+          "summary": "List  all comments of a blog",
+          "security": [
+            {
+              "token": []
+            }
+          ],
+          "parameters":[{
+            "in":"path",
+            "name":"blogId",
+            "schema":{
+              "type":"string",
+              "required":"true"
+            },
+          }],
           "responses": {
             "200": {
               "description": "OK",
@@ -740,8 +811,11 @@ export const swaggerJson = {
             }
           }
         }
+
+
+  
       },
-      "/api/comments/{blogId}": {
+      "/api/blog/{blogId}/comments/{commentId}": {
         "put": {
           "tags": ["Comments"],
           "summary": "Update a comment ",
@@ -756,7 +830,14 @@ export const swaggerJson = {
             "schema":{
               "type":"string",
               "required":"true"
-            },
+            }},
+            {
+              "in":"path",
+              "name":"commentId",
+              "schema":{
+                "type":"string",
+                "required":"true"
+              },
           }],
           "requestBody": {
             "content": {
@@ -801,49 +882,25 @@ export const swaggerJson = {
         "delete": {
           "tags": ["Comments"],
           "summary": " delete a comment",
-          "parameters":[{
-            "in":"path",
-            "name":"blogId",
-            "schema":{
-              "type":"string",
-              "required":"true"
-            },
-          }],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "data": {
-                        "type": "object"
-                      },
-                      "message": {
-                        "type": "message"
-                      },
-                      "error": {
-                        "type": "error"
-                      }
-                    }
-                  },
-                  
-                }
-              }
+          "security": [
+            {
+              "token": []
             }
-          }
-        },
-        "post": {
-          "tags": ["Comments"],
-          "summary": "write  a comment",
-          "parameters":[{
+          ],
+         "parameters":[{
             "in":"path",
             "name":"blogId",
             "schema":{
               "type":"string",
               "required":"true"
-            },
+            }},
+            {
+              "in":"path",
+              "name":"commentId",
+              "schema":{
+                "type":"string",
+                "required":"true"
+              },
           }],
           "responses": {
             "200": {
@@ -875,7 +932,11 @@ export const swaggerJson = {
         "get": {
           "tags": ["Messages"],
           "summary": "Get all messages",
-          
+          "security": [
+            {
+              "token": []
+            }
+          ],
           "responses": {
             "200": {
               "description": "OK",
@@ -1000,6 +1061,44 @@ export const swaggerJson = {
               }
             }
           }
+        },
+        "delete": {
+          "tags": ["Messages"],
+          "summary": "Delete all messages",
+          "security":[
+            {
+              token:[]
+            }
+          ],
+      
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "error": {
+                        "type": "error"
+                      }
+                    }
+                  },
+                  "example": {
+                    
+                      "status": "success",
+                      "message": "messages deleted "
+                  }
+                }
+              }
+            }
+          }
         }
 
       },
@@ -1084,6 +1183,193 @@ export const swaggerJson = {
           }
         }
       }
+      ,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      "/api/portfolio": {
+        "get": {
+          "tags": ["Portfolio"],
+          "summary": "Get all portfolios",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "array"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "error": {
+                        "type": "error"
+                      }
+                    }
+                  },
+                  "example": {
+                    "status": "success",
+                    "data": [
+                        {
+                            "_id": "65f16520cba3ca90789d0e86",
+                            "workUrl": "this the url of the work",
+                            "image": "http://res.cloudinary.com/df12i4qqo/image/upload/v1710318897/zypxnpfl1uqzuxsabe7w.png",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "65f1668acba3ca90789d0e88",
+                            "workUrl": "this the url of the work",
+                            "image": "http://res.cloudinary.com/df12i4qqo/image/upload/v1710319247/pw6kvxcer8eswwjg7kr0.png",
+                            "__v": 0
+                        }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": ["Portfolio"],
+          "summary": "Write a portfolio",
+          "security":[
+            {
+              "token":[]
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "workUrl": {
+                      "type": "string",
+                      "required": true
+                    },
+
+                    "image": {
+                      "type": "string",
+                      "format":"binary"
+                    },
+  
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "error": {
+                        "type": "error"
+                      }
+                    }
+                  },
+                  "example": {
+                    "status": "success",
+                   "message": "portfolio successfully posted"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "tags": ["Portfolio"],
+          "summary": "Delete a  portfolio",
+          "security":[
+            {
+              token:[]
+            }
+          ],
+          "parameters":[{
+            "in":"path",
+            "name":"id",
+            "schema":{
+              "type":"string",
+              "required":"true"
+            },
+          }],
+      
+          "responses": {
+            "200": {
+              "description": "OK",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "error": {
+                        "type": "error"
+                      }
+                    }
+                  },
+                  "example": {
+                    
+                      "status": "success",
+                      "message": "portfolio deleted "
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      
     
     }
   }

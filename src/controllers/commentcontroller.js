@@ -21,7 +21,7 @@ export default class CommentsController{
          const decoded= jwt.verify(token,process.env.JWT_SECRET)
         try {
           const comment= new Comment(_.pick(req.body,['commentBody']));
-          comment.blog=req.params.id
+          comment.blog=req.params.blogId;
           comment.author=decoded.userId;
           await comment.save();
           return res.status(204).send();
@@ -51,7 +51,7 @@ export default class CommentsController{
     }
     static async updateComment(req,res){
         try {
-        const comment= await Comment.findByIdAndUpdate(req.params.id,{commentBody:req.body.commentBody,updatedAt:Date.now()},{new:true})
+        const comment= await Comment.findByIdAndUpdate(req.params.commentId,{commentBody:req.body.commentBody,updatedAt:Date.now()},{new:true})
         return res.status(200).json({
             status:"success",
             message:"comment updated"
@@ -66,7 +66,7 @@ export default class CommentsController{
     }
     static  async deleteComment(req,res){
        try {
-        const comment = await  Comment.findByIdAndDelete(req.params.id,)
+        const comment = await  Comment.findByIdAndDelete(req.params.commentId);
         return res.status(204).send()
         
        } catch (error) {
@@ -78,5 +78,28 @@ export default class CommentsController{
         
        }
  
+    }
+    static async deleteAllComments(req,res){
+        try{
+        const comments= await Comment.find({blog:req.params.blogId})
+             if(comments.length<1){
+
+                return res.status(401).json({
+                status:'fail',
+                message:'no comments on this blog'
+                })
+            }
+            const AllCommentsOnABlog= await Comment.deleteMany({blog:req.params.blogId});
+            return res.status(200).json({
+              status:'success',
+              message:`deleted`   
+            })
+        }catch(error){
+            return res.status(500).json({
+                status:'error',
+                message:error.message
+            })
+        }
+
     }
 }

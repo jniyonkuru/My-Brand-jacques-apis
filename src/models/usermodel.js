@@ -13,22 +13,25 @@ const userSchema=new mongoose.Schema({
         required:true,
         minlength:5,
         maxlength:255,
+        trim:true,
     },
     password:{
         type:String,
         required:true,
         minlength:5,
-        maxlength:1024
+        maxlength:1024,
+        trim:true,
     },
     confirmPassword:{
         type:String,
         required:true,
         minlength:5,
-        maxlength:1024
+        maxlength:1024,
+        trim:true,
     },
     isAdmin:{
         type:Boolean,
-        required:true}
+        default:false}
         ,
     createdAt:{
         type:Date,

@@ -3,6 +3,7 @@ import ValidateBlog from "../utils/validateblog.js";
 import _ from "lodash"
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import {v2 as cloudinary} from 'cloudinary'
 
 dotenv.config()
 
@@ -19,12 +20,17 @@ export default class BlogController{
         const token= authorization.split(' ')[1]
         const decoded = jwt.verify(token,process.env.JWT_SECRET);
         blog.author=decoded.userId;
-        blog.image={
-            data:req.file.filename,
-            contentType:'image/jpg'
+        if(!req.file){
+            return res.status(401).json({
+                status:"fail",
+                message:"image is required"
+              })
         }
-         
-      await blog.save()
+
+            const  result =await cloudinary.uploader.upload(req.file.path);
+            blog.image=result.url
+          
+       await blog.save()
       return res.status(200).json({
         status:'success',
         data:blog
@@ -44,7 +50,7 @@ export default class BlogController{
         message:error.details[0].message}
      );
      try {
-        const blog= await Blog.findByIdAndUpdate(req.params.id,{blogTitle:req.body.blogTitle,image:req.body.image,author:req.body.author,updatedAt:Date.now()})
+        const blog= await Blog.findByIdAndUpdate(req.params.id,{blogTitle:req.body.blogTitle,updatedAt:Date.now()})
        return  res.status(204).send()
      } catch (error){
        return res.status(500).json({
@@ -104,7 +110,6 @@ try {
     const decoded=jwt.verify(token,process.env.JWT_SECRET);
     const userId=decoded.userId;
     const likedBlog= await Blog.findOne({_id:req.params.id,likedBy:{$in:userId}});
-
    if(likedBlog){
     const blog= await Blog.findByIdAndUpdate(req.params.id,{$pull:{likedBy:userId},$inc:{likes:-1}},{new:true});
      return res.status(200).json({
