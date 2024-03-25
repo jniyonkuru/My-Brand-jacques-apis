@@ -4,7 +4,8 @@ export default class ValidateBlog{
     static validateBlog(blog){
 const blogSchema=Joi.object({
     blogTitle:Joi.string().min(5).max(255).required(),
-    blogBody:Joi.string().required()
+    blogBody:Joi.string().required(),
+    image:Joi.binary()
 });
   return blogSchema.validate(blog);
     }

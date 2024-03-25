@@ -35,7 +35,7 @@ export default class CommentsController{
     }
     static async getAllComments(req,res){
        try {
-        const allComments=await Comment.find();
+        const allComments= await Comment.find({blog:req.params.blogId})
         return res.status(200).json({
             status:"success",
             data:allComments

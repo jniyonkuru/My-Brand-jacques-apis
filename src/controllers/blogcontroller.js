@@ -50,7 +50,9 @@ export default class BlogController{
         message:error.details[0].message}
      );
      try {
-        const blog= await Blog.findByIdAndUpdate(req.params.id,{blogTitle:req.body.blogTitle,updatedAt:Date.now()})
+        const  result =await cloudinary.uploader.upload(req.file.path);
+        const img=result.url
+        const blog= await Blog.findByIdAndUpdate(req.params.id,{blogTitle:req.body.blogTitle,blogBody:req.body.blogBody,image:img ,updatedAt:Date.now()})
        return  res.status(204).send()
      } catch (error){
        return res.status(500).json({
@@ -130,5 +132,23 @@ try {
     })  
 }
 }
+static async search(req,res){
 
+        const { query } = req.query;
+        console.log(query)
+        try {
+            const blogs = await Blog.find({
+                $or: [
+                    {blogTitle: { $regex: query, $options: 'i' } },
+                    {blogBody: { $regex: query, $options: 'i' } },
+                ]
+            });
+            console.log(blogs)
+            res.json(blogs);
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+
+
+}
 }

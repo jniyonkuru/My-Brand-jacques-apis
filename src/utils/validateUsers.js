@@ -16,8 +16,7 @@ export  default class Validation{
             .messages({
               'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
             }),
-          confirmPassword: Joi.ref('password'),
-            isAdmin:Joi.boolean().required()
+          confirmPassword: Joi.ref('password')
         }).with('password', 'confirmPassword')
         return userSchema.validate(user);
         

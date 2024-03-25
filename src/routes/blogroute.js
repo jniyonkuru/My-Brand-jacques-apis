@@ -13,10 +13,12 @@ const storage = multer.diskStorage({
   })
 const upload =multer({storage:storage})
 const router= express.Router();
+router.get('/searchByQuery',BlogController.search)
 router.post('/',upload.single('image'),AuthMiddleware.isAuthenticated,BlogController.writeBlog);
-router.put('/:id',AuthMiddleware.isAuthenticated,BlogController.updateBlog);
+router.put('/:id',upload.single('image'),BlogController.updateBlog);
 router.get('/',BlogController.getAllBlogs);
 router.get('/:id',BlogController.getOneBlog);
 router.delete('/:id',AuthMiddleware.isAuthenticated,AuthMiddleware.checkRole,BlogController.deleteBlog);
 router.post('/:id/like',AuthMiddleware.isAuthenticated,BlogController.likeBlog);
+
 export default router;
