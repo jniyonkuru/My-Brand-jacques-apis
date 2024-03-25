@@ -8,6 +8,7 @@ export  default class Validation{
             email:Joi.string().email({
                 minDomainSegments:2,tlds:{allow:['net','com']}
             }).required(),
+            isAdmin:Joi.bool(),
             password: Joi.string()
             .min(8)
             .max(255)
@@ -18,6 +19,9 @@ export  default class Validation{
             }),
           confirmPassword: Joi.ref('password')
         }).with('password', 'confirmPassword')
+      
+    
+          
         return userSchema.validate(user);
         
     }
