@@ -12,9 +12,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Login to Render
-        run: echo "${{ secrets.RENDER_PASSWORD }}" | render login --email "${{ secrets.RENDER_EMAIL }}"
-
       - name: Deploy to Render
-        run: render deploy -- --branch ${{ github.event.pull_request.head.ref }} --pr ${{ github.event.number }}
+        uses: render-deploy-action
+        with:
+          render_token: ${{ secrets.RENDER_TOKEN }}
+          args: --branch ${{ github.event.pull_request.head.ref }} --pr ${{ github.event.number }}
+
 
