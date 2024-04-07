@@ -1,0 +1,20 @@
+name: Deploy to Render
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Render
+        run: echo "${{ secrets.RENDER_PASSWORD }}" | render login --email "${{ secrets.RENDER_EMAIL }}"
+
+      - name: Deploy to Render
+        run: render deploy -- --branch ${{ github.event.pull_request.head.ref }} --pr ${{ github.event.number }}
+
